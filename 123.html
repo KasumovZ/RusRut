@@ -1,10 +1,9 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
+  <meta charset="utf-8">
   <title>Русско - рутульский переводчик</title>
-  <link rel="icon" href="https://cdn-icons-png.freepik.com/512/17189/17189571.png?ga=GA1.1.936812116.1758836121">
-
+  <link rel="icon" href="https://images.icon-icons.com/2515/PNG/512/language_translator_icon_150921.png">
   <style>
 
 :root{
@@ -19,18 +18,23 @@ color-scheme: dark;
 *{box-sizing:border-box}
 body {
       margin: 0;
+      padding: 0%;
       font-family: Inter, Arial, sans-serif;
       background: #0f1724;
+      background-image: url('https://riadagestan.ru/upload/iblock/e97/e97e6d9051b19d21b2628d55a79dbcee.jpeg');
+      background-size: cover;
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+      font-size: 20px;
     }
 .wrap{
 width:100%;
 max-width:1100px;
 background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+background-color: rgba(2,6,23,0.7);
 border-radius:16px;
 padding:22px;
 box-shadow: 0 8px 30px rgba(2,6,23,0.6);
@@ -44,11 +48,11 @@ gap:16px;
 margin-bottom:16px;
 }
 .logo{
-width:90px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+width:96px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
 background:linear-gradient(135deg,var(--accent1),var(--accent2));
-color:white;font-weight:700;font-size:20px;box-shadow:0 6px 20px rgba(2,6,23,0.6);}
+color:white;font-weight:700;font-size:22px;box-shadow:0 6px 20px rgba(2,6,23,0.6);}
 
-h1{margin:0;font-size:20px;color:white}
+h1{margin:0;font-size:25px;color:white}
 p.lead{margin:0;color:var(--muted);font-size:13px}
     .controls {
       text-align: center;
@@ -70,6 +74,7 @@ p.lead{margin:0;color:var(--muted);font-size:13px}
     .columns {
       display: flex;
       gap: 20px;
+height: 300px;
     }
     .col {
       flex: 1;
@@ -89,6 +94,7 @@ p.lead{margin:0;color:var(--muted);font-size:13px}
       padding: 12px;
       font-size: 16px;
       resize: none;
+      background-color:white
     }
   </style>
 </head>
@@ -100,18 +106,18 @@ p.lead{margin:0;color:var(--muted);font-size:13px}
 <h1>Русско-рутульский переводчик</h1>
 </div>
 </header>
-    <div class="controls">
+    <div class="controls" >
       <button id="switchBtn">⇄</button>
     </div>
 
     <div class="columns">
       <div class="col">
         <div class="label" id="leftLabel">Русский</div>
-        <textarea id="inputText" placeholder="Введите текст..."></textarea>
+        <textarea style="color: black; font-family: Inter, Arial, sans-serif; font-size: 22px;" id="inputText" placeholder="Введите текст..."></textarea>
       </div>
       <div class="col">
         <div class="label" id="rightLabel">Рутульский</div>
-        <textarea id="outputText" placeholder="Перевод..." readonly></textarea>
+        <textarea style="color: black; font-family: Inter, Arial, sans-serif; font-size: 22px;" id="outputText" placeholder="Перевод..." readonly></textarea>
       </div>
     </div>
   </div>
@@ -171,6 +177,9 @@ p.lead{margin:0;color:var(--muted);font-size:13px}
   </script>
 </body>
 </html>
+
+
+
 
 
 
