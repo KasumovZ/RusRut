@@ -4,7 +4,18 @@
   <meta charset="utf-8">
   <title>Русский ↔ Рутульский Переводчик</title>
   <style>
-    body {
+
+:root{
+--bg:#0f1724;
+--card:rgba(255,255,255,0.04);
+--accent1:#7c3aed; /* violet */
+--accent2:#06b6d4; /* cyan */
+--glass: rgba(255,255,255,0.06);
+--muted: rgba(255,255,255,0.7);
+color-scheme: dark;
+}
+*{box-sizing:border-box}
+body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
       background: #0f1724;
@@ -14,35 +25,32 @@
       justify-content: center;
       min-height: 100vh;
     }
-    .wrap {
-      width: 90%;
-      max-width: 1200px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-    }
-    header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    h1 { margin: 0; font-size: 24px; }
-    .columns {
-      display: flex;
-      gap: 20px;
-    }
-    textarea {
-      flex: 1;
-      height: 300px;
-      border-radius: 12px;
-      border: none;
-      padding: 12px;
-      font-size: 16px;
-      resize: none;
-    }
+.wrap{
+width:100%;
+max-width:1100px;
+background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+border-radius:16px;
+padding:22px;
+box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+border:1px solid rgba(255,255,255,0.03);
+backdrop-filter: blur(8px) saturate(120%);
+}
+header{
+display:flex;
+align-items:center;
+gap:16px;
+margin-bottom:16px;
+}
+.logo{
+width:90px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,var(--accent1),var(--accent2));
+color:white;font-weight:700;font-size:20px;box-shadow:0 6px 20px rgba(2,6,23,0.6);}
+
+h1{margin:0;font-size:20px;color:white}
+p.lead{margin:0;color:var(--muted);font-size:13px}
     .controls {
       text-align: center;
-      margin: 20px 0;
+      margin: 10px 0 20px;
     }
     button {
       background: #2563eb;
@@ -57,26 +65,96 @@
     button:hover {
       background: #1d4ed8;
     }
+    .columns {
+      display: flex;
+      gap: 20px;
+    }
+    .col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .label {
+      margin-bottom: 8px;
+      font-weight: bold;
+      text-align: center;
+    }
+    textarea {
+      flex: 1;
+      height: 250px;
+      border-radius: 12px;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      resize: none;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Переводчик Русский ↔ Рутульский</h1>
-    </header>
-
+<div class="wrap">
+<header>
+<div class="logo">RusRut</div>
+<div>
+<h1>Русско-рутульский переводчик</h1>
+</div>
+</header>
     <div class="controls">
-      <button id="switchBtn">Русский → Рутульский</button>
+      <button id="switchBtn">⇄</button>
     </div>
 
     <div class="columns">
-      <textarea id="inputText" placeholder="Введите текст..."></textarea>
-      <textarea id="outputText" placeholder="Перевод..." readonly></textarea>
+      <div class="col">
+        <div class="label" id="leftLabel">Русский</div>
+        <textarea id="inputText" placeholder="Введите текст..."></textarea>
+      </div>
+      <div class="col">
+        <div class="label" id="rightLabel">Рутульский</div>
+        <textarea id="outputText" placeholder="Перевод..." readonly></textarea>
+      </div>
     </div>
   </div>
 
-  <script>
-    // Словарь: пары "русский → рутульский"
+<script>
+   
+
+    let direction = "ru-rut"; // направление
+    const switchBtn = document.getElementById("switchBtn");
+    const inputText = document.getElementById("inputText");
+    const outputText = document.getElementById("outputText");
+    const leftLabel = document.getElementById("leftLabel");
+    const rightLabel = document.getElementById("rightLabel");
+
+    // Переключатель направления
+    switchBtn.addEventListener("click", () => {
+      direction = direction === "ru-rut" ? "rut-ru" : "ru-rut";
+      switchBtn.textContent = direction === "ru-rut" ? "⇄" : "⇄";
+      leftLabel.textContent = direction === "ru-rut" ? "Русский" : "Рутульский";
+      rightLabel.textContent = direction === "ru-rut" ? "Рутульский" : "Русский";
+      outputText.value = "";
+      inputText.value = "";
+    });
+
+    // Функция перевода по словам
+    function translate(text) {
+      if (!text.trim()) return "";
+      const words = text.toLowerCase().split(/\s+/);
+      return words.map(word => {
+        if (direction === "ru-rut") {
+          return dictionary[word] || `[${word}]`;
+        } else {
+          for (let [ru, rut] of Object.entries(dictionary)) {
+            if (rut === word) return ru;
+          }
+          return `[${word}]`;
+        }
+      }).join(" ");
+    }
+
+    // Автоперевод при вводе
+    inputText.addEventListener("input", () => {
+      outputText.value = translate(inputText.value);
+    }); 
+///////////////////////////////////////////// Словарь встроенный для примера
     const dictionary = {
       "привет": "салам",
       "как дела": "вай къана?",
@@ -86,42 +164,11 @@
       "доброе утро": "хайир са",
       "спасибо": "рахмат"
     };
+///////////////////////////////////////////////
 
-    let direction = "ru-rut"; // направление
-    const switchBtn = document.getElementById("switchBtn");
-    const inputText = document.getElementById("inputText");
-    const outputText = document.getElementById("outputText");
-
-    // Переключатель направления
-    switchBtn.addEventListener("click", () => {
-      direction = direction === "ru-rut" ? "rut-ru" : "ru-rut";
-      switchBtn.textContent = direction === "ru-rut" ? "Русский → Рутульский" : "Рутульский → Русский";
-      outputText.value = "";
-      inputText.value = "";
-    });
-
-    // Функция перевода
-    function translate(text) {
-      text = text.toLowerCase().trim();
-      if (!text) return "";
-
-      if (direction === "ru-rut") {
-        return dictionary[text] || "[нет в словаре]";
-      } else {
-        // Обратный поиск
-        for (let [ru, rut] of Object.entries(dictionary)) {
-          if (rut === text) return ru;
-        }
-        return "[нет в словаре]";
-      }
-    }
-
-    // Автоперевод при вводе
-    inputText.addEventListener("input", () => {
-      outputText.value = translate(inputText.value);
-    });
   </script>
 </body>
 </html>
+
 
 
