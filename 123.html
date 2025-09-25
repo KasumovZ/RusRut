@@ -122,61 +122,76 @@ height: 300px;
     </div>
   </div>
 
+
 <script>
-   
-
-    let direction = "ru-rut"; // направление
-    const switchBtn = document.getElementById("switchBtn");
-    const inputText = document.getElementById("inputText");
-    const outputText = document.getElementById("outputText");
-    const leftLabel = document.getElementById("leftLabel");
-    const rightLabel = document.getElementById("rightLabel");
-
-    // Переключатель направления
-    switchBtn.addEventListener("click", () => {
-      direction = direction === "ru-rut" ? "rut-ru" : "ru-rut";
-      switchBtn.textContent = direction === "ru-rut" ? "⇄" : "⇄";
-      leftLabel.textContent = direction === "ru-rut" ? "Русский" : "Рутульский";
-      rightLabel.textContent = direction === "ru-rut" ? "Рутульский" : "Русский";
-      outputText.value = "";
-      inputText.value = "";
-    });
-
-    // Функция перевода по словам
-    function translate(text) {
-      if (!text.trim()) return "";
-      const words = text.toLowerCase().split(/\s+/);
-      return words.map(word => {
-        if (direction === "ru-rut") {
-          return dictionary[word] || `[${word}]`;
-        } else {
-          for (let [ru, rut] of Object.entries(dictionary)) {
-            if (rut === word) return ru;
-          }
-          return `[${word}]`;
-        }
-      }).join(" ");
-    }
-
-    // Автоперевод при вводе
-    inputText.addEventListener("input", () => {
-      outputText.value = translate(inputText.value);
-    }); 
 ///////////////////////////////////////////// Словарь встроенный для примера
-    const dictionary = {
-      "привет": "салам",
-      "как дела": "вай къана?",
-      "дом": "йув",
-      "вода": "су",
-      "человек": "кӏиш",
-      "доброе утро": "хайир са",
-      "спасибо": "рахмат"
-    };
+const dictionary = {
+  "привет": "салам",
+  "как дела": "вай къана",
+  "дом": "йув",
+  "вода": "су",
+  "человек": "к1иш",
+  "доброе утро": "хайир са",
+  "спасибо": "рахмат"
+};
 ///////////////////////////////////////////////
 
-  </script>
+let direction = "ru-rut"; // направление
+const switchBtn = document.getElementById("switchBtn");
+const inputText = document.getElementById("inputText");
+const outputText = document.getElementById("outputText");
+const leftLabel = document.getElementById("leftLabel");
+const rightLabel = document.getElementById("rightLabel");
+
+// Переключатель направления
+switchBtn.addEventListener("click", () => {
+  direction = direction === "ru-rut" ? "rut-ru" : "ru-rut";
+  switchBtn.textContent = "⇄";
+  leftLabel.textContent = direction === "ru-rut" ? "Русский" : "Рутульский";
+  rightLabel.textContent = direction === "ru-rut" ? "Рутульский" : "Русский";
+  outputText.value = "";
+  inputText.value = "";
+});
+
+function translate(text) {
+  if (!text.trim()) return "";
+
+  const preserveCase = (original, translated) => 
+    original[0] === original[0].toUpperCase() 
+      ? translated.charAt(0).toUpperCase() + translated.slice(1)
+      : translated;
+
+  let translatedText = text;
+
+  // Сортируем ключи словаря по длине (длинные фразы сначала)
+  const entries = Object.entries(dictionary).sort((a, b) => b[0].length - a[0].length);
+
+  if (direction === "ru-rut") {
+    for (let [ru, rut] of entries) {
+      const escaped = ru.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // экранируем спецсимволы
+      const regex = new RegExp(escaped, "gi"); // удаляем \b для фраз
+      translatedText = translatedText.replace(regex, match => preserveCase(match, rut));
+    }
+  } else {
+    // Для rut-ru
+    for (let [ru, rut] of entries) {
+      const escaped = rut.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(escaped, "gi");
+      translatedText = translatedText.replace(regex, match => preserveCase(match, ru));
+    }
+  }
+
+  return translatedText;
+}
+
+// Автоперевод при вводе
+inputText.addEventListener("input", () => {
+  outputText.value = translate(inputText.value);
+});
+</script>
 </body>
 </html>
+
 
 
 
