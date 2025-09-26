@@ -126,13 +126,42 @@ height: 300px;
 <script>
 ///////////////////////////////////////////// Словарь встроенный для примера
 const dictionary = {
-  "привет": "салам",
-  "как дела": "вай къана",
-  "дом": "йув",
-  "вода": "су",
-  "человек": "к1иш",
-  "доброе утро": "хайир са",
-  "спасибо": "рахмат"
+
+  "дом": {
+    "default": "хал",
+    "context": {
+      "в": " аь хала",
+      "из": "халаа",
+    }
+  },
+  "домой": "хала",
+  "старый": "Кьасды",
+  "из": " ",
+  "от": " ",
+  "под": " ",
+  "у": " ",
+  "в": " ",
+  "на": " ",
+  "из": " ",
+  "отец": {
+    "default": "дид",
+    "context": {
+      "старый": "дедий",
+      "храмой": "буба"
+    }
+  },
+  "пошел": "гьархыр",
+  "ушел": "кьархыр",
+  "у тебя есть": "вахда ама",
+  "тебя": {
+    "default": "вада",
+    "context": {
+      "от": "вадаа",
+      "из": "вакля"
+    },
+  },
+  "отрезать": "кууткьас",
+
 };
 ///////////////////////////////////////////////
 
@@ -153,45 +182,256 @@ switchBtn.addEventListener("click", () => {
   inputText.value = "";
 });
 
-function translate(text) {
-  if (!text.trim()) return "";
+function buildMaps(dict) {
+  const ruToRut = new Map();   // ruKeyLower -> [rutVariant1, rutVariant2, ...]
+  const rutToRu = new Map();   // rutVariantLower -> ruKeyOriginal
+  const contextMap = new Map(); // ruKeyLower -> { default: str|null, prev: Map, next: Map }
 
-  const preserveCase = (original, translated) => 
-    original[0] === original[0].toUpperCase() 
-      ? translated.charAt(0).toUpperCase() + translated.slice(1)
-      : translated;
+  for (const [rawRu, rawVal] of Object.entries(dict)) {
+    if (!rawRu) continue;
+    const ruKey = String(rawRu).trim();
+    const ruLower = ruKey.toLowerCase();
 
-  let translatedText = text;
+    // helper to add variant
+    const addRutVariant = (v) => {
+      if (!v) return;
+      const s = String(v).trim();
+      if (!s) return;
+      const sLower = s.toLowerCase();
+      // add to ruToRut
+      if (!ruToRut.has(ruLower)) ruToRut.set(ruLower, []);
+      const arr = ruToRut.get(ruLower);
+      if (!arr.includes(s)) arr.push(s);
+      // add reverse
+      rutToRu.set(sLower, ruKey);
+    };
 
-  // Сортируем ключи словаря по длине (длинные фразы сначала)
-  const entries = Object.entries(dictionary).sort((a, b) => b[0].length - a[0].length);
+    if (typeof rawVal === "string") {
+      addRutVariant(rawVal);
+    } else if (Array.isArray(rawVal)) {
+      for (const v of rawVal) addRutVariant(v);
+    } else if (rawVal && typeof rawVal === "object") {
+      // structured object — could be { default, context } or ambiguous mapping
+      const hasDefault = Object.prototype.hasOwnProperty.call(rawVal, "default");
+      const hasContext = Object.prototype.hasOwnProperty.call(rawVal, "context");
 
-  if (direction === "ru-rut") {
-    for (let [ru, rut] of entries) {
-      const escaped = ru.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // экранируем спецсимволы
-      const regex = new RegExp(escaped, "gi"); // удаляем \b для фраз
-      translatedText = translatedText.replace(regex, match => preserveCase(match, rut));
-    }
-  } else {
-    // Для rut-ru
-    for (let [ru, rut] of entries) {
-      const escaped = rut.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const regex = new RegExp(escaped, "gi");
-      translatedText = translatedText.replace(regex, match => preserveCase(match, ru));
+      if (hasDefault || hasContext) {
+        // structured form: rawVal.default, rawVal.context
+        const def = hasDefault ? String(rawVal.default).trim() : null;
+        const prevMap = new Map();
+        const nextMap = new Map();
+
+        if (def) addRutVariant(def);
+
+        if (hasContext && rawVal.context && typeof rawVal.context === "object") {
+          // context may be { "в": "халыхда", "из": "халыхдиш" }
+          for (const [ctxKey, ctxVal] of Object.entries(rawVal.context)) {
+            if (!ctxKey) continue;
+            const ck = String(ctxKey).trim().toLowerCase();
+            const cv = String(ctxVal).trim();
+            if (!cv) continue;
+            prevMap.set(ck, cv);   // treat as previous-word trigger by default
+            addRutVariant(cv);
+          }
+        }
+
+        contextMap.set(ruLower, { default: def || (ruToRut.get(ruLower) ? ruToRut.get(ruLower)[0] : null), prev: prevMap, next: nextMap });
+      } else {
+        // ambiguous object — try detect pattern:
+        const keys = Object.keys(rawVal).map(k => String(k).trim()).filter(Boolean);
+        const vals = Object.values(rawVal).map(v => String(v).trim()).filter(Boolean);
+
+        // Case A: values equal ruKey (like { "хала":"дома", "халыхда":"дома" })
+        if (vals.length > 0 && vals.every(v => v.toLowerCase() === ruLower)) {
+          // keys are rut forms
+          for (const k of keys) addRutVariant(k);
+        }
+        // Case B: keys equal ruKey (unlikely)
+        else if (keys.length > 0 && keys.every(k => k.toLowerCase() === ruLower)) {
+          for (const v of vals) addRutVariant(v);
+        } else {
+          // otherwise take union of keys and values as rut variants (covers both styles)
+          const set = new Set([...keys, ...vals]);
+          for (const s of set) addRutVariant(s);
+        }
+      }
     }
   }
 
-  return translatedText;
+  return { ruToRut, rutToRu, contextMap };
 }
 
-// Автоперевод при вводе
+function escapeForMatch(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/* Построим карты один раз */
+const { ruToRut, rutToRu, contextMap } = buildMaps(dictionary);
+
+/* Токенизация: слова (буквы/цифры/апостроф/тире) и прочее (пробелы/пунктуация) */
+function tokenizePreserve(text) {
+  // разделяем на блоки: слова (лат/кириллица/цифры/'-) и прочее
+  const tokens = text.match(/[\w\u0400-\u04FF'-]+|[^\w\u0400-\u04FF'-]+/gu) || [text];
+  // соберём позиции слов (индекс токена, original, lowercase)
+  const wordPositions = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (/^[\w\u0400-\u04FF'-]+$/u.test(t)) {
+      wordPositions.push({ tokenIndex: i, original: t, lower: t.toLowerCase() });
+    }
+  }
+  return { tokens, wordPositions };
+}
+
+function preserveCase(original, translated) {
+  if (!original || !translated) return translated || original;
+  const first = original.charAt(0);
+  if (first === first.toUpperCase() && first.toLowerCase() !== first.toUpperCase()) {
+    return translated.charAt(0).toUpperCase() + translated.slice(1);
+  }
+  return translated;
+}
+
+/* Основная функция перевода, использует токенизацию и карты */
+function translate(text) {
+  if (!text || !text.trim()) return "";
+
+  const { tokens, wordPositions } = tokenizePreserve(text);
+
+  // быстрый случай: если нет слов — вернуть как есть
+  if (wordPositions.length === 0) return text;
+
+  // Выставим списки ключей (от длинных к коротким)
+  const ruKeys = Array.from(ruToRut.keys()).sort((a, b) => {
+    const la = a.split(/\s+/).length, lb = b.split(/\s+/).length;
+    if (lb !== la) return lb - la;
+    return b.length - a.length;
+  });
+  const rutKeys = Array.from(rutToRu.keys()).sort((a, b) => {
+    const la = a.split(/\s+/).length, lb = b.split(/\s+/).length;
+    if (lb !== la) return lb - la;
+    return b.length - a.length;
+  });
+
+  const resultTokens = [];
+  let tokenCursor = 0; // индекс в tokens до которого уже скопировали
+  let wi = 0; // индекс в wordPositions
+
+  if (direction === "ru-rut") {
+    while (wi < wordPositions.length) {
+      let matched = false;
+
+      for (const ruKey of ruKeys) {
+        const ruWords = ruKey.split(/\s+/).filter(Boolean);
+        const L = ruWords.length;
+        if (wi + L - 1 >= wordPositions.length) continue;
+
+        // сравниваем последовательность слов
+        let ok = true;
+        for (let k = 0; k < L; k++) {
+          if (wordPositions[wi + k].lower !== ruWords[k]) { ok = false; break; }
+        }
+        if (!ok) continue;
+
+        // нашли совпадение ruKey начиная в wi
+        const startToken = wordPositions[wi].tokenIndex;
+        const endToken = wordPositions[wi + L - 1].tokenIndex;
+
+        // добавляем промежуточные токены до начала совпадения
+        for (let t = tokenCursor; t < startToken; t++) resultTokens.push(tokens[t]);
+
+        // выбор варианта (с учётом context)
+        const ruLower = ruKey;
+        const variants = ruToRut.get(ruLower) || [];
+        // prev/next words for context
+        const prevWord = (wi - 1 >= 0) ? wordPositions[wi - 1].lower : "";
+        const nextWord = (wi + L < wordPositions.length) ? wordPositions[wi + L].lower : "";
+        let chosen = variants.length ? variants[0] : "";
+
+        const ctx = contextMap.get(ruLower);
+        if (ctx) {
+          // check prev map first
+          if (ctx.prev && ctx.prev.has(prevWord)) chosen = ctx.prev.get(prevWord);
+          else if (ctx.next && ctx.next.has(nextWord)) chosen = ctx.next.get(nextWord);
+          else if (ctx.default) chosen = ctx.default;
+          else if (variants.length) chosen = variants[0];
+        }
+
+        // preserve case on the first original token
+        const preserved = preserveCase(wordPositions[wi].original, chosen);
+        resultTokens.push(preserved);
+
+        tokenCursor = endToken + 1;
+        wi += L;
+        matched = true;
+        break;
+      }
+
+      if (!matched) {
+        // ничего не подошло — просто скопируем следующий токен (включая пробелы/пунктуацию)
+        const currTokenIndex = wordPositions[wi].tokenIndex;
+        for (let t = tokenCursor; t <= currTokenIndex; t++) resultTokens.push(tokens[t]);
+        tokenCursor = currTokenIndex + 1;
+        wi++;
+      }
+    }
+  } else {
+    // rut -> ru
+    while (wi < wordPositions.length) {
+      let matched = false;
+
+      for (const rutKey of rutKeys) {
+        const rutWords = rutKey.split(/\s+/).filter(Boolean);
+        const L = rutWords.length;
+        if (wi + L - 1 >= wordPositions.length) continue;
+
+        // сравнение последовательности слов
+        let ok = true;
+        for (let k = 0; k < L; k++) {
+          if (wordPositions[wi + k].lower !== rutWords[k]) { ok = false; break; }
+        }
+        if (!ok) continue;
+
+        // нашли совпадение rutKey
+        const startToken = wordPositions[wi].tokenIndex;
+        const endToken = wordPositions[wi + L - 1].tokenIndex;
+
+        // добавляем промежуточные токены до начала совпадения
+        for (let t = tokenCursor; t < startToken; t++) resultTokens.push(tokens[t]);
+
+        const ruKey = rutToRu.get(rutKey);
+        const preserved = preserveCase(wordPositions[wi].original, ruKey || wordPositions[wi].original);
+        resultTokens.push(preserved);
+
+        tokenCursor = endToken + 1;
+        wi += L;
+        matched = true;
+        break;
+      }
+
+      if (!matched) {
+        const currTokenIndex = wordPositions[wi].tokenIndex;
+        for (let t = tokenCursor; t <= currTokenIndex; t++) resultTokens.push(tokens[t]);
+        tokenCursor = currTokenIndex + 1;
+        wi++;
+      }
+    }
+  }
+
+  // добавить хвост
+  for (let t = tokenCursor; t < tokens.length; t++) resultTokens.push(tokens[t]);
+
+  return resultTokens.join("");
+}
+
+/* Подключаем автоперевод (оставляем как у тебя) */
 inputText.addEventListener("input", () => {
   outputText.value = translate(inputText.value);
 });
 </script>
+
 </body>
 </html>
-
 
 
 
