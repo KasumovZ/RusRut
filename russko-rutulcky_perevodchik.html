@@ -1,0 +1,1348 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Русско‑рутульский переводчик</title>
+  <link rel="icon" href="https://images.icon-icons.com/2515/PNG/512/language_translator_icon_150921.png">
+  <style>
+    :root {
+      --bg: #fff;
+      --card: #ffffff;
+      --accent: #1a73e8;
+      --accent-hover: #1557b0;
+      --border: #dadce0;
+      --text-primary: #202124;
+      --text-secondary: #5f6368;
+      --placeholder: #70757a;
+      --hover-bg: #f1f3f4;
+      --switch-bg: #e8f0fe;
+      --divider: #e8eaed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Yandex Sans', Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+     background-image: url('https://riadagestan.ru/upload/iblock/e97/e97e6d9051b19d21b2628d55a79dbcee.jpeg');
+       background-size: cover;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      background-color: var(--card);
+      border-radius: 12px;
+      box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.12),
+        0 4px 16px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .logo {
+      width: 80px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .main {
+      padding: 24px;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .switch-btn {
+      background-color: var(--switch-bg);
+      border: none;
+      color: var(--accent);
+      font-size: 20px;
+      cursor: pointer;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .switch-btn:hover {
+      background-color: #dbe9ff;
+      transform: translateY(-1px);
+    }
+
+    .switch-btn:active {
+      transform: scale(0.92);
+      background-color: #c7dfff;
+    }
+
+    .language-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding: 0 4px;
+      
+    }
+
+    .lang-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .lang-dropdown {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+      background-color:var(--hover-bg);
+    }
+
+    .lang-dropdown:hover {
+      background-color: var(--hover-bg);
+    }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea {
+      flex: 1;
+      min-height: 320px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      resize: none;
+      color: var(--text-primary);
+      transition: border-color 0.3s, box-shadow 0.3s;
+      font-family: 'Yandex Sans', Arial, sans-serif;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    textarea::placeholder {
+      color: var(--placeholder);
+      opacity: 0.9;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background-color: #fff;
+      color: var(--text-secondary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background-color: var(--hover-bg);
+      color: var(--text-primary);
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    @media (max-width: 768px) {
+      .columns {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+    }
+    
+.copyright-bottom-right {
+  position: fixed;           /* Фиксируем относительно окна браузера */
+  bottom: 16px;            /* Отступ от нижнего края */
+  right: 16px;             /* Отступ от правого края */
+  background-color: rgba(255, 255, 255, 0.9); /* Полупрозрачный фон */
+  padding: 6px 10px;       /* Внутренние отступы */
+  border-radius: 4px;      /* Скругление углов */
+  font-size: 12px;        /* Размер текста */
+  color: #5f6368;         /* Цвет текста */
+  z-index: 1000;         /* Чтобы не перекрывался другими элементами */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Лёгкая тень */
+  pointer-events: none;     /* Запрещаем взаимодействие (клики и т.п.) */
+  user-select: none;       /* Запрещаем выделение текста */
+}
+
+/* Для маленьких экранов — уменьшаем отступы */
+@media (max-width: 480px) {
+  .copyright-bottom-right {
+    bottom: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+}
+.imya{
+ color: var(--text);
+}
+
+/* Кнопка "Прозрачный фон" */
+.glass-btn {
+  position: absolute;
+  right: 16px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background-color: var(--hover-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin-left: 8px; /* Отступ от кнопки темы */
+}
+
+.glass-btn:hover {
+  background-color: var(--card);
+  transform: scale(1.05);
+}
+
+/* Вариант — только иконка */
+.glass-btn.icon-only {
+  padding: 8px;
+  gap: 0;
+}
+
+/* Иконка и текст */
+.glass-btn .icon {
+  font-size: 16px;
+}
+.glass-btn .text {
+  white-space: nowrap;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .glass-btn {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  .glass-btn .text {
+    display: none; /* Скрываем текст на мобильных */
+  }
+}
+
+/* Эффект прозрачности при наведении */
+body.glass-mode .container,
+body.glass-mode header,
+body.glass-mode footer {
+  opacity: 0.2;
+  transition: opacity 0.5s ease;
+}
+
+/* Чтобы кнопка оставалась непрозрачной */
+body.glass-mode #glassBtn {
+  opacity: 1 !important;
+  transform: scale(1.05) !important;
+}
+
+/* Таблица алфавита */
+.alphabet-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+/* Ячейки */
+.alphabet-table td {
+  padding: 12px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Эффект при наведении */
+.alphabet-table td:hover {
+  background-color: var(--hover-bg);
+  transform: scale(1.05);
+}
+
+/* Заголовки строк (если нужны) */
+.alphabet-table th {
+  padding: 12px;
+  text-align: center;
+  background-color: var(--accent);
+  color: white;
+  border: 1px solid var(--border);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .alphabet-table td {
+    padding: 8px;
+    font-size: 16px;
+  }
+}
+
+/* Кнопка PDF */
+.pdf-btn {
+   padding: 8px 12px;
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+.pdf-btn:hover {
+  background-color: var(--hover-bg);
+  transform: scale(1.05);
+}
+
+
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .pdf-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+  .pdf-btn .text {
+    display: none; /* Скрываем текст на мобильных */
+  }
+}
+
+
+/* Стили для PDF-модального окна */
+.pdf-modal {
+  max-width: 2500px;
+  max-height: 1200px;
+    min-height: 900px;
+  min-width: 1000px;
+}
+
+#pdfViewer {
+  /* Если браузер не поддерживает PDF-просмотр */
+  min-height: 780px;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">RusRut</div>
+      <h1 class="imya">РУССКО-РУТУЛЬСКИЙ СЛОВАРЬ-ПЕРЕВОДЧИК</h1>
+
+            <button id="themeToggle" class="theme-btn" title="Переключить тему">🌜</button>
+        <button id="glassBtn" class="glass-btn" title="Показать фон">
+    <span class="text">Показать фон</span>
+  </button>
+      <button id="alphabetBtn" class="alphabet-btn" title="Показать алфавит">
+  <span class="text">Алфавит</span>
+    <span class="icon">🔤</span>
+</button>
+<!-- Кнопка -->
+<button id="pdfBtn" class="pdf-btn">
+  <span class="text">Словарь</span>
+  <span class="icon">📄</span>
+</button>
+
+<!-- Модальное окно с PDF -->
+<div id="pdfModal" class="modal-overlay">
+  <div class="modal-window pdf-modal">
+    <div class="modal-header">
+      <h3>Рутульско-русский словарь (Алисултанов А.С., Сулейманова Т.А., 2019)</h3>
+      <a target="_blank" rel="noopener" class="skachat" href="alisultanov_as_suleimanova_ta_rutulskorusskii_slovar.pdf" >Открыть в отдельном окне</a>
+      <span id="closePdfModal" class="close-btn">&times;</span>
+    </div>
+    <div class="modal-content">
+      <!-- Контейнер для PDF -->
+      <iframe id="pdfViewer" 
+              type="application/pdf"
+              frameborder="0"
+              style="width: 100%; height: 600px;">
+      </iframe>
+      
+    </div>
+  </div>
+</div>
+
+
+
+    </header>
+    <div class="main">
+      <div class="controls">
+        <button class="switch-btn" id="switchBtn" title="Поменять языки местами">⇄</button>
+      </div>
+
+      <div class="columns">
+        <div class="col">
+          <div class="language-selector">
+            <span class="lang-label">Исходный язык</span>
+            <button class="lang-dropdown" id="leftLabel"> <svg class="flag" viewBox="0 0 640 480" width="20" height="15">
+                <rect width="640" height="480" fill="#FFFFFF"/>
+                <rect y="160" width="640" height="160" fill="#0039A6"/>
+                <rect y="320" width="640" height="160" fill="#D52B1E"/>
+              </svg> Русский</button>
+          </div>
+          <textarea
+            id="inputText"
+            placeholder="Введите текст для перевода..."
+          ></textarea>
+          <div class="action-buttons">
+            <button class="btn" id="clearBtn">Очистить</button>
+          </div>
+          <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <div class="col">
+          <div class="language-selector">
+            <span class="lang-label">Язык перевода</span>
+            <button class="lang-dropdown" id="rightLabel"> <img  viewBox="0 0 640 480" src="rut.ico" alt=" " class="flag" width="20" height="15">
+    Рутульский </button>
+          </div>
+          <textarea
+            id="outputText"
+            placeholder="Здесь появится перевод..."
+            readonly
+          ></textarea>
+          <div class="action-buttons">
+            <button class="btn" id="copyBtn">Копировать</button>
+          </div>
+          <div class="status-message" id="outputStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="copyright-bottom-right">
+  &copy; KasumovZ™ <span id="copyrightYear">2025</span>
+</div>
+
+
+<div id="alphabetModal" class="modal-overlay">
+  <div class="modal-window">
+    <!-- Шапка окна -->
+    <div class="modal-header">
+      <h3>Алфавиты</h3>
+      <span id="closeModal" class="close-btn">&times;</span>
+    </div>
+
+    <!-- Вкладки для выбора алфавита -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="ru">Русский</button>
+      <button class="tab-btn" data-tab="rut">Рутульский</button>
+    </div>
+
+    <!-- Содержимое: русский алфавит -->
+    <div id="tab-ru" class="tab-content active">
+    <table class="alphabet-table">
+      <tbody>
+        <tr>
+          <td>А а</td> <td>Б б</td> <td>В в</td> <td>Г г</td> <td>Д д</td> 
+          <td>Е е</td> <td>Ё ё</td> <td>Ж ж</td> <td>З з</td> <td>И и</td> 
+        </tr>
+        <tr>
+          <td>Й й</td> <td>К к</td> <td>Л л</td> <td>М м</td> <td>Н н</td> 
+          <td>О о</td>  <td>П п</td> <td>Р р</td> <td>С с</td> <td>Т т</td>  
+        </tr>
+        <tr>
+          <td>У у</td> <td>Ф ф</td> <td>Х х</td> <td>Ц ц</td> <td>Ч ч</td> 
+          <td>Ш ш</td> <td>Щ щ</td> <td>Ъ ъ</td> <td>Ы ы</td> <td>Ь ь</td> 
+        </tr>
+        <tr> <td>Э э</td> <td>Ю ю</td> <td>Я я</td></tr>
+      </tbody>
+      </table>
+</div>
+    <!-- Содержимое: рутульский алфавит -->
+    <div id="tab-rut" class="tab-content">
+    <table class="alphabet-table">
+      <tbody>
+        <tr>
+          <td>А а</td> <td>Аь аь</td> <td>АI аI</td> <td>Б б</td> <td>В в</td> 
+          <td>Г г</td> <td>Гъ гъ</td> <td>Гь гь</td> <td>ГI гI</td> <td>Д д</td> 
+        </tr>
+        <tr>
+          <td>Дж дж</td> <td>Дз дз</td> <td>Е е</td> <td>Ё ё</td> <td>Ж ж</td> 
+          <td>З з</td> <td>И и</td> <td>Й й</td> <td>К к</td> <td>Къ къ</td> 
+        </tr>
+        <tr>
+          <td>Кь кь</td> <td>КI кI</td> <td>Л л</td> <td>М м</td> <td>Н н</td> 
+          <td>О о</td>  <td>П п</td> <td>ПI пI</td> <td>Р р</td> <td>С с</td>   
+        </tr>
+        <tr>
+          <td>Т т</td> <td>ТI тI</td> <td>У у</td> <td>Уь уь</td> <td>УI уI</td> 
+          <td>Ф ф</td> <td>Х х</td> <td>Хъ хъ</td> <td>Хь хь</td> <td>ХI хI</td>     
+        </tr>
+        <tr>
+          <td>Ц ц</td> <td>ЦI цI</td> <td>Ч ч</td> <td>ЧI чI</td> <td>Ш ш</td>
+          <td>Щ щ</td> <td>Ъ ъ</td> <td>Ы ы</td> <td>ЫI ыI</td> <td>Ь ь</td>  
+        </tr>
+        <tr><td>Э э</td> <td>Ю ю</td> <td>Я я</td></tr>
+      </tbody>
+    </table>
+</div>
+  </div>
+</div>
+
+
+  </div>
+</div>
+
+
+<script>
+
+
+///////////////////////////////////////////// Словарь встроенный для примера
+const dictionary = {
+  "из": "|",
+  "от": "|",
+  "под": "|",
+  "у": "-",
+  "в": "|",
+  "на": "|",
+
+  "?": "ама",
+  "дом": {
+    "default": "хал",
+    "context": {
+      "в": " аь хала",
+      "из": "халаа",
+    }},
+   "дома": {
+    "default": "хала",
+    "context": {
+      "в": " аь хала",
+      "из": "халаа",
+    }},
+  "домой": "хала",
+  "старый": "кьасды",
+  "отец": {
+    "default": "дид",
+    "context": {
+      "старый": "дедий",
+      "храмой": "буба"
+    }
+  },
+  "пошел": "гьархыр",
+  "ушел": "кьархыр",
+
+  "есть":"а",
+  "тебя": {
+    "default": "вада",
+    "context": {
+      "у": "вада",
+      "из": "вакля",
+      "от": "вадаа",
+    },
+  },
+  "отрезать": "кууткьас",
+  "есть": "а",
+  "спрашивают": "хулкара а",
+
+};
+///////////////////////////////////////////////
+
+let direction = "ru-rut"; // направление
+const switchBtn = document.getElementById("switchBtn");
+const inputText = document.getElementById("inputText");
+const outputText = document.getElementById("outputText");
+const leftLabel = document.getElementById("leftLabel");
+const rightLabel = document.getElementById("rightLabel");
+
+// Переключатель направления
+switchBtn.addEventListener("click", () => {
+  // Меняем направление
+  direction = direction === "ru-rut" ? "rut-ru" : "ru-rut";
+
+  // Обновляем текст и флаги в кнопках языков
+  if (direction === "ru-rut") {
+    // Русский → Рутульский
+    leftLabel.innerHTML = `
+      <svg class="flag" viewBox="0 0 640 480" width="20" height="15">
+        <rect width="640" height="480" fill="#FFFFFF"/>
+        <rect y="160" width="640" height="160" fill="#0039A6"/>
+        <rect y="320" width="640" height="160" fill="#D52B1E"/>
+      </svg>
+      Русский
+    `;
+    rightLabel.innerHTML = `
+      <img src="rut.ico" alt=" " class="flag" width="20" height="15">
+      Рутульский
+    `;
+  } else {
+    // Рутульский → Русский
+    leftLabel.innerHTML = `
+      <img src="rut.ico" alt=" " class="flag" width="20" height="15">
+      Рутульский
+    `;
+    rightLabel.innerHTML = `
+      <svg class="flag" viewBox="0 0 640 480" width="20" height="15">
+        <rect width="640" height="480" fill="#FFFFFF"/>
+        <rect y="160" width="640" height="160" fill="#0039A6"/>
+        <rect y="320" width="640" height="160" fill="#D52B1E"/>
+      </svg>
+      Русский
+    `;
+  }
+
+  // Очищаем поля ввода/вывода
+  inputText.value = "";
+  outputText.value = "";
+});
+
+function buildMaps(dict) {
+  const ruToRut = new Map();   // ruKeyLower -> [rutVariant1, rutVariant2, ...]
+  const rutToRu = new Map();   // rutVariantLower -> ruKeyOriginal
+  const contextMap = new Map(); // ruKeyLower -> { default: str|null, prev: Map, next: Map }
+
+  for (const [rawRu, rawVal] of Object.entries(dict)) {
+    if (!rawRu) continue;
+    const ruKey = String(rawRu).trim();
+    const ruLower = ruKey.toLowerCase();
+
+    // helper to add variant
+    const addRutVariant = (v) => {
+      if (!v) return;
+      const s = String(v).trim();
+      if (!s) return;
+      const sLower = s.toLowerCase();
+      // add to ruToRut
+      if (!ruToRut.has(ruLower)) ruToRut.set(ruLower, []);
+      const arr = ruToRut.get(ruLower);
+      if (!arr.includes(s)) arr.push(s);
+      // add reverse
+      rutToRu.set(sLower, ruKey);
+    };
+
+    if (typeof rawVal === "string") {
+      addRutVariant(rawVal);
+    } else if (Array.isArray(rawVal)) {
+      for (const v of rawVal) addRutVariant(v);
+    } else if (rawVal && typeof rawVal === "object") {
+      // structured object — could be { default, context } or ambiguous mapping
+      const hasDefault = Object.prototype.hasOwnProperty.call(rawVal, "default");
+      const hasContext = Object.prototype.hasOwnProperty.call(rawVal, "context");
+
+      if (hasDefault || hasContext) {
+        // structured form: rawVal.default, rawVal.context
+        const def = hasDefault ? String(rawVal.default).trim() : null;
+        const prevMap = new Map();
+        const nextMap = new Map();
+
+        if (def) addRutVariant(def);
+
+        if (hasContext && rawVal.context && typeof rawVal.context === "object") {
+          // context may be { "в": "халыхда", "из": "халыхдиш" }
+          for (const [ctxKey, ctxVal] of Object.entries(rawVal.context)) {
+            if (!ctxKey) continue;
+            const ck = String(ctxKey).trim().toLowerCase();
+            const cv = String(ctxVal).trim();
+            if (!cv) continue;
+            prevMap.set(ck, cv);   // treat as previous-word trigger by default
+            addRutVariant(cv);
+          }
+        }
+
+        contextMap.set(ruLower, { default: def || (ruToRut.get(ruLower) ? ruToRut.get(ruLower)[0] : null), prev: prevMap, next: nextMap });
+      } else {
+        // ambiguous object — try detect pattern:
+        const keys = Object.keys(rawVal).map(k => String(k).trim()).filter(Boolean);
+        const vals = Object.values(rawVal).map(v => String(v).trim()).filter(Boolean);
+
+        // Case A: values equal ruKey (like { "хала":"дома", "халыхда":"дома" })
+        if (vals.length > 0 && vals.every(v => v.toLowerCase() === ruLower)) {
+          // keys are rut forms
+          for (const k of keys) addRutVariant(k);
+        }
+        // Case B: keys equal ruKey (unlikely)
+        else if (keys.length > 0 && keys.every(k => k.toLowerCase() === ruLower)) {
+          for (const v of vals) addRutVariant(v);
+        } else {
+          // otherwise take union of keys and values as rut variants (covers both styles)
+          const set = new Set([...keys, ...vals]);
+          for (const s of set) addRutVariant(s);
+        }
+      }
+    }
+  }
+
+  return { ruToRut, rutToRu, contextMap };
+}
+
+function escapeForMatch(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/* Построим карты один раз */
+const { ruToRut, rutToRu, contextMap } = buildMaps(dictionary);
+
+/* Токенизация: слова (буквы/цифры/апостроф/тире) и прочее (пробелы/пунктуация) */
+function tokenizePreserve(text) {
+  // разделяем на блоки: слова (лат/кириллица/цифры/'-) и прочее
+  const tokens = text.match(/[\w\u0400-\u04FF'-]+|[^\w\u0400-\u04FF'-]+/gu) || [text];
+  // соберём позиции слов (индекс токена, original, lowercase)
+  const wordPositions = [];
+  for (let i = 0; i < tokens.length; i++) {
+    const t = tokens[i];
+    if (/^[\w\u0400-\u04FF'-]+$/u.test(t)) {
+      wordPositions.push({ tokenIndex: i, original: t, lower: t.toLowerCase() });
+    }
+  }
+  return { tokens, wordPositions };
+}
+
+function preserveCase(original, translated) {
+  if (!original || !translated) return translated || original;
+  const first = original.charAt(0);
+  if (first === first.toUpperCase() && first.toLowerCase() !== first.toUpperCase()) {
+    return translated.charAt(0).toUpperCase() + translated.slice(1);
+  }
+  return translated;
+}
+
+/* Основная функция перевода, использует токенизацию и карты */
+function translate(text) {
+  if (!text || !text.trim()) return "";
+
+  const { tokens, wordPositions } = tokenizePreserve(text);
+
+  // быстрый случай: если нет слов — вернуть как есть
+  if (wordPositions.length === 0) return text;
+
+  // Выставим списки ключей (от длинных к коротким)
+  const ruKeys = Array.from(ruToRut.keys()).sort((a, b) => {
+    const la = a.split(/\s+/).length, lb = b.split(/\s+/).length;
+    if (lb !== la) return lb - la;
+    return b.length - a.length;
+  });
+  const rutKeys = Array.from(rutToRu.keys()).sort((a, b) => {
+    const la = a.split(/\s+/).length, lb = b.split(/\s+/).length;
+    if (lb !== la) return lb - la;
+    return b.length - a.length;
+  });
+
+  const resultTokens = [];
+  let tokenCursor = 0; // индекс в tokens до которого уже скопировали
+  let wi = 0; // индекс в wordPositions
+
+  if (direction === "ru-rut") {
+    while (wi < wordPositions.length) {
+      let matched = false;
+
+      for (const ruKey of ruKeys) {
+        const ruWords = ruKey.split(/\s+/).filter(Boolean);
+        const L = ruWords.length;
+        if (wi + L - 1 >= wordPositions.length) continue;
+
+        // сравниваем последовательность слов
+        let ok = true;
+        for (let k = 0; k < L; k++) {
+          if (wordPositions[wi + k].lower !== ruWords[k]) { ok = false; break; }
+        }
+        if (!ok) continue;
+
+        // нашли совпадение ruKey начиная в wi
+        const startToken = wordPositions[wi].tokenIndex;
+        const endToken = wordPositions[wi + L - 1].tokenIndex;
+
+        // добавляем промежуточные токены до начала совпадения
+        for (let t = tokenCursor; t < startToken; t++) resultTokens.push(tokens[t]);
+
+        // выбор варианта (с учётом context)
+        const ruLower = ruKey;
+        const variants = ruToRut.get(ruLower) || [];
+        // prev/next words for context
+        const prevWord = (wi - 1 >= 0) ? wordPositions[wi - 1].lower : "";
+        const nextWord = (wi + L < wordPositions.length) ? wordPositions[wi + L].lower : "";
+        let chosen = variants.length ? variants[0] : "";
+
+        const ctx = contextMap.get(ruLower);
+        if (ctx) {
+          // check prev map first
+          if (ctx.prev && ctx.prev.has(prevWord)) chosen = ctx.prev.get(prevWord);
+          else if (ctx.next && ctx.next.has(nextWord)) chosen = ctx.next.get(nextWord);
+          else if (ctx.default) chosen = ctx.default;
+          else if (variants.length) chosen = variants[0];
+        }
+
+        // preserve case on the first original token
+        const preserved = preserveCase(wordPositions[wi].original, chosen);
+        resultTokens.push(preserved);
+
+        tokenCursor = endToken + 1;
+        wi += L;
+        matched = true;
+        break;
+      }
+
+      if (!matched) {
+        // ничего не подошло — просто скопируем следующий токен (включая пробелы/пунктуацию)
+        const currTokenIndex = wordPositions[wi].tokenIndex;
+        for (let t = tokenCursor; t <= currTokenIndex; t++) resultTokens.push(tokens[t]);
+        tokenCursor = currTokenIndex + 1;
+        wi++;
+      }
+    }
+  } else {
+    // rut -> ru
+    while (wi < wordPositions.length) {
+      let matched = false;
+
+      for (const rutKey of rutKeys) {
+        const rutWords = rutKey.split(/\s+/).filter(Boolean);
+        const L = rutWords.length;
+        if (wi + L - 1 >= wordPositions.length) continue;
+
+        // сравнение последовательности слов
+        let ok = true;
+        for (let k = 0; k < L; k++) {
+          if (wordPositions[wi + k].lower !== rutWords[k]) { ok = false; break; }
+        }
+        if (!ok) continue;
+
+        // нашли совпадение rutKey
+        const startToken = wordPositions[wi].tokenIndex;
+        const endToken = wordPositions[wi + L - 1].tokenIndex;
+
+        // добавляем промежуточные токены до начала совпадения
+        for (let t = tokenCursor; t < startToken; t++) resultTokens.push(tokens[t]);
+
+        const ruKey = rutToRu.get(rutKey);
+        const preserved = preserveCase(wordPositions[wi].original, ruKey || wordPositions[wi].original);
+        resultTokens.push(preserved);
+
+        tokenCursor = endToken + 1;
+        wi += L;
+        matched = true;
+        break;
+      }
+
+      if (!matched) {
+        const currTokenIndex = wordPositions[wi].tokenIndex;
+        for (let t = tokenCursor; t <= currTokenIndex; t++) resultTokens.push(tokens[t]);
+        tokenCursor = currTokenIndex + 1;
+        wi++;
+      }
+    }
+  }
+
+  // добавить хвост
+  for (let t = tokenCursor; t < tokens.length; t++) resultTokens.push(tokens[t]);
+
+  return resultTokens.join("");
+}
+
+/* Подключаем автоперевод (оставляем как у тебя) */
+inputText.addEventListener("input", () => {
+  outputText.value = translate(inputText.value);
+});
+
+
+document.getElementById("copyrightYear").textContent = new Date().getFullYear();
+
+</script>
+<script>
+  const themeToggle = document.getElementById('themeToggle');
+
+  // Проверяем сохранённую тему при загрузке
+  const currentTheme = localStorage.getItem('theme');
+  if (currentTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+  }
+
+  // Обновляем текст кнопки в зависимости от темы
+  themeToggle.textContent = currentTheme === 'dark' ? 'Светлый режим ☀️' : 'Темный режим 🌜';
+
+
+  // Обработчик клика
+  themeToggle.addEventListener('click', () => {
+    // Переключаем класс
+    document.body.classList.toggle('dark-theme');
+
+
+    // Сохраняем выбранную тему
+    if (document.body.classList.contains('dark-theme')) {
+      localStorage.setItem('theme', 'dark');
+      themeToggle.textContent = 'Светлый режим ☀️';
+    } else {
+      localStorage.setItem('theme', 'light');
+      themeToggle.textContent = 'Темный режим 🌜';
+    }
+  });
+</script>
+
+
+
+<script>
+  const glassBtn = document.getElementById('glassBtn');
+
+  // Обработчик наведения
+  glassBtn.addEventListener('mouseenter', () => {
+    document.body.classList.add('glass-mode');
+  });
+
+  glassBtn.addEventListener('mouseleave', () => {
+    document.body.classList.remove('glass-mode');
+  });
+</script>
+
+
+ <style>
+  :root {
+  --bg: #fff;
+  --text: #202124;
+  --card: #ffffff;
+  --border: #dadce0;
+  --accent: #1a73e8;
+  --hover-bg: #f1f3f4;
+}
+
+/* Тёмная тема */
+.dark-theme {
+  --bg: #121212;
+  --text: #e8eaed;
+  --card: #242424;
+  --border: #303030;
+  --accent: #4285f4;
+  --hover-bg: #333333;
+}
+
+/* Общие стили для тела */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.skachat{
+  margin-left: 20px;
+  padding: 8px 12px;
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  display: flex;
+
+  gap: 6px;
+  width: 205px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Кнопка переключения темы */
+.theme-btn {
+margin-left: auto; 
+
+  padding: 8px 12px;
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.theme-btn:hover {
+  background-color: var(--hover-bg);
+    transform: scale(1.05);
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .theme-btn {
+    bottom: 8px;
+    right: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+}
+ </style>
+
+
+<style>
+/* Кнопка "Алфавит" */
+.alphabet-btn {
+
+
+  padding: 8px 12px;
+  background-color: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.alphabet-btn:hover {
+  background-color: var(--hover-bg);
+  transform: scale(1.05);
+}
+
+
+
+.alphabet-btn .text {
+  white-space: nowrap;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .alphabet-btn {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  .alphabet-btn .text {
+    display: none;
+  }
+}
+
+/* Модальное окно (оверлей) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none; /* Скрыто по умолчанию*/
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+/* Активное состояние — окно видно */
+.modal-overlay.active {
+  display: flex;
+}
+
+/* Само окно */
+.modal-window {
+  background-color: var(--card);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Шапка окна */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 18px;
+}
+
+/* Кнопка закрытия */
+.close-btn {
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--text);
+  transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+  color: var(--accent);
+}
+
+/* Содержимое (алфавит) */
+.modal-content {
+  padding: 20px;
+}
+
+.alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  text-align: center;
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  background-color: #1557b0;
+}
+
+/* Стили для букв */
+.alphabet-grid::before,
+.alphabet-grid::after {
+  content: "";
+  grid-column: 1 / -1;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  .modal-window {
+    width: 100%;
+    border-radius: 0;
+    max-height: 90vh;
+  }
+
+  .alphabet-grid {
+    grid-template-columns: repeat(7, 1fr);
+    font-size: 16px;
+  }
+}
+
+
+/* Вкладки */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  margin: 0 20px;
+}
+
+.tab-btn {
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: var(--accent);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 500;
+}
+
+/* Содержимое вкладок */
+.tab-content {
+  display: none;
+  padding: 20px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Сетка алфавита (остаётся как было) */
+.alphabet-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+</style>
+
+
+<script>
+  const modal = document.getElementById('alphabetModal');
+  const closeBtn = document.getElementById('closeModal');
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  // Открыть модальное окно
+  document.getElementById('alphabetBtn').addEventListener('click', () => {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Закрыть по крестику
+  closeBtn.addEventListener('click', () => {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  });
+
+  // Закрыть по клику вне окна
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Закрыть на Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+
+  // Переключение вкладок
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Убираем активный класс у кнопок и контента
+      tabButtons.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+
+      // Добавляем активный класс для выбранной вкладки
+      btn.classList.add('active');
+      const tabId = btn.getAttribute('data-tab');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    });
+  });
+</script>
+
+
+<script>
+  // Элементы
+  const pdfBtn = document.getElementById('pdfBtn');
+  const pdfModal = document.getElementById('pdfModal');
+  const closePdfModal = document.getElementById('closePdfModal');
+  const pdfViewer = document.getElementById('pdfViewer');
+
+
+  // Путь к PDF (замените на свой)
+  const pdfUrl = 'C:/Users/kasum/Desktop/Переводчик/alisultanov_as_suleimanova_ta_rutulskorusskii_slovar.pdf'; // Пример пути
+
+
+  // Открыть модальное окно с PDF
+  pdfBtn.addEventListener('click', () => {
+    pdfViewer.src = pdfUrl; // Загружаем PDF
+    pdfModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
+
+  // Закрыть по крестику
+  closePdfModal.addEventListener('click', () => {
+    pdfModal.classList.remove('active');
+    document.body.style.overflow = '';
+    pdfViewer.src = ''; // Очищаем источник
+  });
+
+  // Закрыть при клике вне окна
+  pdfModal.addEventListener('click', (e) => {
+    if (e.target === pdfModal) {
+      pdfModal.classList.remove('active');
+      document.body.style.overflow = '';
+      pdfViewer.src = '';
+    }
+  });
+
+  // Закрыть на Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && pdfModal.classList.contains('active')) {
+      pdfModal.classList.remove('active');
+      document.body.style.overflow = '';
+      pdfViewer.src = '';
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
